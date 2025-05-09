@@ -1,3 +1,0 @@
-C:/code/cimgui_all/build/win-arm64/CMakeFiles/cimgui.dir
-C:/code/cimgui_all/build/win-arm64/CMakeFiles/ALL_BUILD.dir
-C:/code/cimgui_all/build/win-arm64/CMakeFiles/ZERO_CHECK.dir

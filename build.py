@@ -12,7 +12,7 @@ vckpg_triplets = {
     "linux-arm64": "arm64-linux",
     "osx-arm64": "arm64-osx",
     "osx-x64": "x64-osx",
-    "wasm": "wasm32-emscripten"
+    "browser-wasm": "wasm32-emscripten"
 }
 
 def rel_path(path):
@@ -33,14 +33,17 @@ def common_cmake_args(target, buildMode, freetype = False):
     return [
         "-B", build_path(target),
         "-DIMGUI_WCHAR32=ON",
-        "-DIMGUI_FREETYPE=ON" + "ON" if freetype else "OFF",
+        "-DIMGUI_FREETYPE=" + ("ON" if freetype else "OFF"),
         f"-DCMAKE_BUILD_TYPE={buildMode}",
     ]
 
+def inWindows():
+    return os.name == "nt"
+
 def setup_vcpkg(target):
     vcpkg_path = rel_path("vcpkg")
-    bootstrap_vcpkg = os.path.join(vcpkg_path, "bootstrap-vcpkg.bat" if os.name == "nt" else "bootstrap-vcpkg.sh")
-    vcpkg = os.path.join(vcpkg_path, "vcpkg.exe" if os.name == "nt" else "vcpkg")
+    bootstrap_vcpkg = os.path.join(vcpkg_path, "bootstrap-vcpkg.bat" if inWindows() else "bootstrap-vcpkg.sh")
+    vcpkg = os.path.join(vcpkg_path, "vcpkg.exe" if inWindows() else "vcpkg")
     subprocess.call(bootstrap_vcpkg)
     subprocess.call([vcpkg, "install", "freetype", "--triplet", vckpg_triplets[target]])
 
@@ -74,9 +77,54 @@ def build_mac(target):
     subprocess.call(["cmake", "--build", buildPath, "--config", buildMode])
 
     srcFolder = os.path.join(buildPath, buildMode, "cimgui.dylib")
-    dstFolder = os.path.join(outFolder, target, "cimgui.dylib")
+    dstFolder = os.path.join(outFolder, "cimgui.dylib")
     new_dir(dstFolder)
     shutil.copy2(srcFolder, dstFolder)
+
+def build_linux(target):
+    assert(os.platform.machine() == "x86_64")
+    triplet = vckpg_triplets[target]
+    buildPath = build_path(target)
+    cmake_cmd = ["cmake",
+        f'-DCMAKE_TOOLCHAIN_FILE={vckg_toolchain}',
+        f"-DVCPKG_TARGET_TRIPLET={triplet}",
+    ] + common_cmake_args(target, buildMode, True)
+    pass
+
+def build_wasm():
+    if "EMSDK" in os.environ:
+        emsdkPath = os.environ["EMSDK"]
+    elif "EMSDK_HOME" in os.environ:
+        emsdkPath = os.environ["EMSDK_HOME"]
+    elif "EMSDKHOME" in os.environ:
+        emsdkPath = os.environ["EMSDKHOME"]
+    else:
+        emsdkPath = input("Please enter the path to your Emscripten SDK: ")
+
+    emsdkToolchain = os.path.join(emsdkPath, "upstream", "emscripten", "cmake", "Modules", "Platform", "Emscripten.cmake")
+    emsdkNodePath = os.path.join(emsdkPath, "node")
+    emsdkNodePath = os.path.join(emsdkNodePath, os.listdir(emsdkPath)[0])
+    buildPath = build_path(target)
+    
+    cmake_cmd = ["cmake",
+        "-DCMAKE_TOOLCHAIN_FILE=" + emsdkToolchain,
+        "-DCMAKE_CROSSCOMPILING_EMULATOR=" + emsdkNodePath,
+        "-DCMAKE_CXX_FLAGS=-s USE_FREETYPE=0 -s WASM=1",
+        "-DCMAKE_C_FLAGS=-s USE_FREETYPE=0 -s WASM=1",
+        "-DCMAKE_LD_FLAGS=-s USE_FREETYPE=0",
+    ] + common_cmake_args(target, buildMode, False)
+    if not inWindows() or shutil.which("ninja.exe") != None: # will will try to use ninja (even in windows) if available
+        cmake_cmd.append("-GNinja")
+    subprocess.call(cmake_cmd)
+
+    subprocess.call(["cmake", "--build", buildPath, "--config", buildMode])
+
+    srcFolder = os.path.join(buildPath, "libcimgui.a")
+    dstFolder = os.path.join(outFolder, target, "cimgui.a")
+    new_dir(dstFolder)
+    shutil.copy2(srcFolder, dstFolder)
+
+    pass
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -85,7 +133,7 @@ if __name__ == "__main__":
         help = "Target platform to build for",
         nargs='?',
         default = "win-x64",
-        choices = ["win-x64", "win-arm64", "linux-x64", "linux-arm64", "mac-arm64", "wasm"]
+        choices = ["win-x64", "win-arm64", "linux-x64", "linux-arm64", "osx-arm64", "osx-x64", "browser-wasm"]
     )
     parser.add_argument(
         "--build_mode",
@@ -115,18 +163,22 @@ if __name__ == "__main__":
     
     # --- Mac arm64 ---
     if args.target == "win-arm64":
-        build_mac_arm64()
+        build_mac(target)
 
+    # --- Mac x64 ---
+    if args.target == "osx-x64":
+        build_mac(target)
 
-    if args.linux_x64:
-        build_linux_x64()
+    # --- Linux x64 ---
+    if args.target == "linux-x64":
+        build_linux(target)
 
+    # --- Linux arm64 ---
+    if args.target == "linux-arm64":
+        build_linux(target)
 
-    if args.linux_arm64:
-        build_linux_arm64()
-
-
-    if args.wasm:
+    # --- WebAssembly ---
+    if args.target == "browser-wasm":
         build_wasm()
 
 
