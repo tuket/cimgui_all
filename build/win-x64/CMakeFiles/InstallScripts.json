@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/code/cimgui_all/build/win-x64/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

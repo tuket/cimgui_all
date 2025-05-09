@@ -1,0 +1,15 @@
+[submodule "cimgui"]
+	path = cimgui
+	url = https://github.com/EvergineTeam/cimgui.git
+[submodule "cimplot"]
+	path = cimplot
+	url = https://github.com/EvergineTeam/cimplot.git
+[submodule "cimnodes"]
+	path = cimnodes
+	url = https://github.com/EvergineTeam/cimnodes.git
+[submodule "cimguizmo"]
+	path = cimguizmo
+	url = https://github.com/EvergineTeam/cimguizmo.git
+[submodule "vcpkg"]
+	path = vcpkg
+	url = https://github.com/microsoft/vcpkg.git
