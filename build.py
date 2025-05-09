@@ -117,7 +117,7 @@ def build_linux(target):
     subprocess.call(["cmake", "--build", buildPath, "--config", buildMode])
 
     srcFolder = os.path.join(buildPath, "libcimgui.so")
-    dstFolder = os.path.join(outFolder, "cimgui.so")
+    dstFolder = os.path.join(outFolder, target, "cimgui.so")
     new_dir(dstFolder)
     shutil.copy2(srcFolder, dstFolder)
 
