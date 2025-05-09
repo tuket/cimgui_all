@@ -89,10 +89,7 @@ def build_mac(target):
 
     subprocess.call(["cmake", "--build", buildPath, "--config", buildMode])
 
-    if isArm64:
-        srcFolder = os.path.join(buildPath, buildMode, "libcimgui.dylib")
-    else:
-        srcFolder = os.path.join(buildPath, "libcimgui.dylib")
+    srcFolder = os.path.join(buildPath, "libcimgui.dylib")
     dstFolder = os.path.join(outFolder, "cimgui.dylib")
     new_dir(dstFolder)
     shutil.copy2(srcFolder, dstFolder)
