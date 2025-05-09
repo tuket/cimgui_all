@@ -61,11 +61,8 @@ jobs:
         version: 4.0.6
         actions-cache-folder: 'emsdk-cache'
 
-    - name: CMake configure
-      run: python3 build.py ${{matrix.target}}
-
     - name: Build
-      run: cmake --build cimgui/build --config Release
+      run: python3 build.py ${{matrix.target}}
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4.3.4
