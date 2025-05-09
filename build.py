@@ -198,7 +198,7 @@ if __name__ == "__main__":
         build_windows(target)
     
     # --- Mac arm64 ---
-    if args.target == "win-arm64":
+    if args.target == "osx-arm64":
         build_mac(target)
 
     # --- Mac x64 ---
