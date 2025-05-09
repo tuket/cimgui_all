@@ -26,9 +26,9 @@ jobs:
           # - os: macos-latest
           #   arch: x86_64
           #   target: osx-x64
-          - os: macos-latest
-            arch: arm64
-            target: osx-arm64
+          # - os: macos-latest
+          #   arch: arm64
+          #   target: osx-arm64
           - os: ubuntu-latest
             arch: wasm
             target: browser-wasm
