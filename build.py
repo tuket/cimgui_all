@@ -77,8 +77,9 @@ def build_windows(target):
 def build_mac(target):
     triplet = vckpg_triplets[target]
     buildPath = build_path(target)
+    isArm64 = target == "osx-arm64"
     cmake_cmd = ["cmake",
-        "-DCMAKE_OSX_ARCHITECTURES=", "arm64" if target == "osx-arm64" else "x86_64",
+        "-DCMAKE_OSX_ARCHITECTURES=", "arm64" if isArm64 else "x86_64",
         f'-DCMAKE_TOOLCHAIN_FILE={vckg_toolchain}',
         f"-DVCPKG_TARGET_TRIPLET={triplet}",
     ] + common_cmake_args(target, buildMode, True)
@@ -86,7 +87,10 @@ def build_mac(target):
 
     subprocess.call(["cmake", "--build", buildPath, "--config", buildMode])
 
-    srcFolder = os.path.join(buildPath, buildMode, "cimgui.dylib")
+    if isArm64:
+        srcFolder = os.path.join(buildPath, buildMode, "libcimgui.dylib")
+    else:
+        srcFolder = os.path.join(buildPath, "libcimgui.dylib")
     dstFolder = os.path.join(outFolder, "cimgui.dylib")
     new_dir(dstFolder)
     shutil.copy2(srcFolder, dstFolder)
