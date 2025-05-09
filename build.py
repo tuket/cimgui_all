@@ -68,7 +68,7 @@ def build_mac(target):
     triplet = vckpg_triplets[target]
     buildPath = build_path(target)
     cmake_cmd = ["cmake",
-        "-A", "ARM64" if target == "osx-arm64" else "x64",
+        "-DCMAKE_OSX_ARCHITECTURES=", "arm64" if target == "osx-arm64" else "x86_64",
         f'-DCMAKE_TOOLCHAIN_FILE={vckg_toolchain}',
         f"-DVCPKG_TARGET_TRIPLET={triplet}",
     ] + common_cmake_args(target, buildMode, True)
@@ -85,11 +85,25 @@ def build_linux(target):
     assert(os.platform.machine() == "x86_64")
     triplet = vckpg_triplets[target]
     buildPath = build_path(target)
+
     cmake_cmd = ["cmake",
         f'-DCMAKE_TOOLCHAIN_FILE={vckg_toolchain}',
         f"-DVCPKG_TARGET_TRIPLET={triplet}",
     ] + common_cmake_args(target, buildMode, True)
-    pass
+    if target == "linux-arm64":
+        cmake_cmd += [
+            "-DCMAKE_SYSTEM_PROCESSOR=aarch64",
+            "-DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc",
+            "-DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++",
+        ]
+    subprocess.call(cmake_cmd)
+
+    subprocess.call(["cmake", "--build", buildPath, "--config", buildMode])
+
+    srcFolder = os.path.join(buildPath, "cimgui.dylib")
+    dstFolder = os.path.join(outFolder, "cimgui.dylib")
+    new_dir(dstFolder)
+    shutil.copy2(srcFolder, dstFolder)
 
 def build_wasm():
     if "EMSDK" in os.environ:
@@ -104,8 +118,9 @@ def build_wasm():
     emsdkToolchain = os.path.join(emsdkPath, "upstream", "emscripten", "cmake", "Modules", "Platform", "Emscripten.cmake")
     emsdkNodePath = os.path.join(emsdkPath, "node")
     emsdkNodePath = os.path.join(emsdkNodePath, os.listdir(emsdkPath)[0])
+    useNinja = not inWindows() or shutil.which("ninja.exe") != None
     buildPath = build_path(target)
-    
+
     cmake_cmd = ["cmake",
         "-DCMAKE_TOOLCHAIN_FILE=" + emsdkToolchain,
         "-DCMAKE_CROSSCOMPILING_EMULATOR=" + emsdkNodePath,
@@ -113,13 +128,16 @@ def build_wasm():
         "-DCMAKE_C_FLAGS=-s USE_FREETYPE=0 -s WASM=1",
         "-DCMAKE_LD_FLAGS=-s USE_FREETYPE=0",
     ] + common_cmake_args(target, buildMode, False)
-    if not inWindows() or shutil.which("ninja.exe") != None: # will will try to use ninja (even in windows) if available
+    if useNinja: # will will try to use ninja (even in windows) if available
         cmake_cmd.append("-GNinja")
     subprocess.call(cmake_cmd)
 
     subprocess.call(["cmake", "--build", buildPath, "--config", buildMode])
 
-    srcFolder = os.path.join(buildPath, "libcimgui.a")
+    if useNinja:
+        srcFolder = os.path.join(buildPath, "libcimgui.a")
+    else:
+        srcFolder = os.path.join(buildPath, buildMode, "libcimgui.a")
     dstFolder = os.path.join(outFolder, target, "cimgui.a")
     new_dir(dstFolder)
     shutil.copy2(srcFolder, dstFolder)
