@@ -37,7 +37,6 @@ jobs:
       with:
         repository: ${{ github.repository }}
         ref: 'master'
-        path: 'cimgui'
         submodules: true
 
     - name: Install dependencies on Ubuntu
@@ -63,7 +62,7 @@ jobs:
         actions-cache-folder: 'emsdk-cache'
 
     - name: CMake configure
-      run: python build.py ${{matrix.target}}
+      run: python3 build.py ${{matrix.target}}
 
     - name: Build
       run: cmake --build cimgui/build --config Release
