@@ -35,7 +35,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4.1.7
       with:
-        repository: 'EvergineTeam/cimgui_all'
+        repository: ${{ github.repository }}
         ref: 'master'
         path: 'cimgui'
         submodules: true
