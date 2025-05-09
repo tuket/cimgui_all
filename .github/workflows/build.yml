@@ -1,0 +1,80 @@
+name: Build cimgui Libraries
+
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            arch: x86_64
+            target: linux-x64
+          - os: ubuntu-latest
+            arch: arm64
+            target: linux-arm64
+          - os: windows-latest
+            arch: x86_64
+            target: windows-x64
+          - os: win-latest
+            arch: x86
+            target: win-x86
+          - os: windows-latest
+            arch: arm64
+            target: win-arm64
+          - os: macos-latest
+            arch: x86_64
+            target: osx-x64
+          - os: macos-latest
+            arch: arm64
+            target: osx-arm64
+          - os: ubuntu-latest
+            arch: wasm
+            target: browser-wasm
+    steps:
+    - uses: actions/checkout@v4.1.7
+      with:
+        repository: 'EvergineTeam/cimgui_all'
+        ref: 'master'
+        path: 'cimgui'
+        submodules: true
+
+    - name: Install dependencies on Ubuntu
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake
+
+    - name: Setup Ninja
+      if: matrix.os == 'ubuntu-latest'
+      uses: ashutoshvarma/setup-ninja@v1.1
+        
+    - name: Install Cross-Compilation Tools for ARM64
+      if: matrix.os == 'ubuntu-latest' && matrix.arch == 'arm64'
+      run: |
+        sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+
+    - name: Install Emscripten
+      if: matrix.arch == 'wasm'
+      uses: mymindstorm/setup-emsdk@v14
+      with:
+        version: 4.0.6
+        actions-cache-folder: 'emsdk-cache'
+
+    - name: CMake configure
+      run: python build.py ${{matrix.target}}
+
+    - name: Build
+      run: cmake --build cimgui/build --config Release
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4.3.4
+      with:
+        name: cimgui-${{ matrix.target }}-artifacts 
+        path: |
+          cimgui/build/OUT/*.dll
+          cimgui/build/OUT/*.so
+          cimgui/build/OUT/*.dylib
+          cimgui/build/OUT/*.a
+        if-no-files-found: ignore # 'warn' or 'ignore' or 'error'

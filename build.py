@@ -50,8 +50,15 @@ def setup_vcpkg(target):
 def build_windows(target):
     triplet = vckpg_triplets[target]
     buildPath = build_path(target)
+    if target == "win-x64":
+        arch = "x64"
+    elif target == "win-x86":
+        arch = "x86"
+    elif target == "win-arm64":
+        arch = "ARM64"
+
     cmake_cmd = ["cmake",
-        "-A", "ARM64" if target == "win-arm64" else "x64",
+        "-A", arch,
         f'-DCMAKE_TOOLCHAIN_FILE={vckg_toolchain}',
         f"-DVCPKG_TARGET_TRIPLET={triplet}",
     ] + common_cmake_args(target, buildMode, True)
