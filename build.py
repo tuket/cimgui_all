@@ -159,7 +159,7 @@ if __name__ == "__main__":
         help = "Target platform to build for",
         nargs='?',
         default = "win-x64",
-        choices = ["win-x64", "win-arm64", "linux-x64", "linux-arm64", "osx-arm64", "osx-x64", "browser-wasm"]
+        choices = vckpg_triplets.keys()
     )
     parser.add_argument(
         "--build_mode",
