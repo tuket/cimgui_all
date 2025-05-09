@@ -3,7 +3,7 @@ import os
 import subprocess
 import shutil
 
-root_path = os.path.abs(os.path.dirname(__file__))
+root_path = os.path.abspath(os.path.dirname(__file__))
 
 vckpg_triplets = {
     "win-x64": "x64-windows-static",
