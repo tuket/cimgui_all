@@ -3,6 +3,7 @@ import os
 import subprocess
 import shutil
 
+print("AAAAAAAAAAAAAAAAA: ", __file__)
 root_path = os.path.abspath(os.path.dirname(__file__))
 
 vckpg_triplets = {
@@ -20,7 +21,9 @@ def rel_path(path):
     return os.path.join(root_path, path)
 
 def build_path(platform):
-    return os.path.join(rel_path("build"), platform)
+    path = os.path.join(rel_path("build"), platform)
+    os.shutil.makedirs(path, exist_ok=True)
+    return path
 
 def create_dir(path):
     os.makedirs(os.path.dirname(path), exist_ok=True)
