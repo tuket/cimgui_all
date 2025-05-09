@@ -96,7 +96,6 @@ def build_mac(target):
     shutil.copy2(srcFolder, dstFolder)
 
 def build_linux(target):
-    assert(os.platform.machine() == "x86_64")
     triplet = vckpg_triplets[target]
     buildPath = build_path(target)
 
@@ -104,8 +103,9 @@ def build_linux(target):
         f'-DCMAKE_TOOLCHAIN_FILE={vckg_toolchain}',
         f"-DVCPKG_TARGET_TRIPLET={triplet}",
     ] + common_cmake_args(target, buildMode, True)
-    if target == "linux-arm64":
-        cmake_cmd += [
+
+    if os.platform.machine() == "x86_64" and target == "linux-arm64":
+        cmake_cmd += [ # crosscompiling
             "-DCMAKE_SYSTEM_PROCESSOR=aarch64",
             "-DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc",
             "-DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++",
