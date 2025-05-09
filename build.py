@@ -7,6 +7,7 @@ root_path = os.path.dirname(__file__)
 
 vckpg_triplets = {
     "win-x64": "x64-windows-static",
+    "win-x86": "x86-windows-static",
     "win-arm64": "arm64-windows-static",
     "linux-x64": "x64-linux",
     "linux-arm64": "arm64-linux",
