@@ -2,6 +2,7 @@ import argparse
 import os
 import subprocess
 import shutil
+import platform
 
 root_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -104,7 +105,7 @@ def build_linux(target):
         f"-DVCPKG_TARGET_TRIPLET={triplet}",
     ] + common_cmake_args(target, buildMode, True)
 
-    if os.platform.machine() == "x86_64" and target == "linux-arm64":
+    if platform.machine() == "x86_64" and target == "linux-arm64":
         cmake_cmd += [ # crosscompiling
             "-DCMAKE_SYSTEM_PROCESSOR=aarch64",
             "-DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc",
