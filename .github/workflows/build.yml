@@ -43,7 +43,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential cmake
+        sudo apt-get install -y build-essential cmake pkg_config zip
 
     - name: Setup Ninja
       if: matrix.os == 'ubuntu-latest'
