@@ -49,6 +49,7 @@ def setup_vcpkg(target):
     bootstrap_vcpkg = os.path.join(vcpkg_path, "bootstrap-vcpkg.bat" if inWindows() else "bootstrap-vcpkg.sh")
     vcpkg = os.path.join(vcpkg_path, "vcpkg.exe" if inWindows() else "vcpkg")
     subprocess.call(bootstrap_vcpkg)
+    subprocess.call([vcpkg, "install", "update"])
     subprocess.call([vcpkg, "install", "freetype", "--triplet", vckpg_triplets[target]])
 
 def build_windows(target):
