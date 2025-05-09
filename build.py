@@ -22,7 +22,7 @@ def rel_path(path):
 
 def build_path(platform):
     path = os.path.join(rel_path("build"), platform)
-    os.shutil.makedirs(path, exist_ok=True)
+    os.makedirs(path, exist_ok=True)
     return path
 
 def create_dir(path):
