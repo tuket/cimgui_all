@@ -12,7 +12,7 @@ vckpg_triplets = {
     "linux-x64": "x64-linux",
     "linux-arm64": "arm64-linux",
     "osx-arm64": "arm64-osx",
-    #"osx-x64": "x64-osx",
+    "osx-x64": "x64-osx",
     "browser-wasm": "wasm32-emscripten"
 }
 
