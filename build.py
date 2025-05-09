@@ -3,7 +3,6 @@ import os
 import subprocess
 import shutil
 
-print("AAAAAAAAAAAAAAAAA: ", __file__)
 root_path = os.path.abspath(os.path.dirname(__file__))
 
 vckpg_triplets = {
@@ -79,7 +78,7 @@ def build_mac(target):
     triplet = vckpg_triplets[target]
     buildPath = build_path(target)
     cmake_cmd = ["cmake",
-        "-DCMAKE_OSX_ARCHITECTURES=", "arm64" if target == "osx-arm64" else "osx-x64",
+        "-DCMAKE_OSX_ARCHITECTURES=", "arm64" if target == "osx-arm64" else "x86_64",
         f'-DCMAKE_TOOLCHAIN_FILE={vckg_toolchain}',
         f"-DVCPKG_TARGET_TRIPLET={triplet}",
     ] + common_cmake_args(target, buildMode, True)
@@ -181,6 +180,8 @@ if __name__ == "__main__":
     
     outFolder = build_path("OUT")
     new_dir(outFolder)
+
+    print("--- CMake Build ---")
 
     # --- Windows x64 ---
     if target == "win-x64":
