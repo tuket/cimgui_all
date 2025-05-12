@@ -68,11 +68,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: cimgui-${{ matrix.target }}-artifacts 
-        path: |
-          build/OUT/*.dll
-          build/OUT/*.so
-          build/OUT/*.dylib
-          build/OUT/*.a
+        path: build/OUT/*
         if-no-files-found: ignore # 'warn' or 'ignore' or 'error'
 
   gather_artifacts:
