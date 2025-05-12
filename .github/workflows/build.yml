@@ -90,10 +90,10 @@ jobs:
         with:
           name: cimgui-win-x64-artifacts
 
-      - name: Download Artifacts - win-x86
-        uses: actions/download-artifact@v4
-        with:
-          name: cimgui-win-x86-artifacts
+      # - name: Download Artifacts - win-x86
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: cimgui-win-x86-artifacts
 
       - name: Download Artifacts - win-arm64
         uses: actions/download-artifact@v4
