@@ -35,6 +35,7 @@ def new_dir(path):
 
 def common_cmake_args(target, buildMode, freetype = False):
     return [
+        "-S", root_path,
         "-B", build_path(target),
         "-DIMGUI_WCHAR32=ON",
         "-DIMGUI_FREETYPE=" + ("ON" if freetype else "OFF"),
@@ -46,8 +47,7 @@ def inWindows():
 
 def setup_vcpkg(target):
     vcpkg_path = rel_path("vcpkg")
-    if not os.path.exists(vcpkg_path):
-        subprocess.call(["git", "clone", "https://github.com/Microsoft/vcpkg.git"])
+    subprocess.call(["git", "clone", "https://github.com/Microsoft/vcpkg.git"])
     bootstrap_vcpkg = os.path.join(vcpkg_path, "bootstrap-vcpkg.bat" if inWindows() else "bootstrap-vcpkg.sh")
     vcpkg = os.path.join(vcpkg_path, "vcpkg.exe" if inWindows() else "vcpkg")
     subprocess.call(bootstrap_vcpkg)
@@ -91,8 +91,8 @@ def build_mac(target):
 
     subprocess.call(["cmake", "--build", buildPath, "--config", buildMode])
 
-    srcFolder = os.path.join(buildPath, "cimgui.dylib")
-    dstFolder = os.path.join(outFolder, "cimgui.dylib")
+    srcFolder = os.path.join(buildPath, "libcimgui.dylib")
+    dstFolder = os.path.join(outFolder, target, "cimgui.dylib")
     new_dir(dstFolder)
     shutil.copy2(srcFolder, dstFolder)
 
