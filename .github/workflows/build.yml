@@ -17,9 +17,9 @@ jobs:
           - os: windows-latest
             arch: x86_64
             target: win-x64
-          - os: windows-latest
-            arch: x86
-            target: win-x86
+          # - os: windows-latest
+          #   arch: x86
+          #   target: win-x86
           - os: windows-latest
             arch: arm64
             target: win-arm64
