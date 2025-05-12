@@ -69,10 +69,10 @@ jobs:
       with:
         name: cimgui-${{ matrix.target }}-artifacts 
         path: |
-          cimgui_all/build/OUT/*.dll
-          cimgui_all/build/OUT/*.so
-          cimgui_all/build/OUT/*.dylib
-          cimgui_all/build/OUT/*.a
+          build/OUT/*.dll
+          build/OUT/*.so
+          build/OUT/*.dylib
+          build/OUT/*.a
         if-no-files-found: ignore # 'warn' or 'ignore' or 'error'
 
   gather_artifacts:
