@@ -75,7 +75,7 @@ jobs:
           cimgui_all/build/OUT/*.a
         if-no-files-found: ignore # 'warn' or 'ignore' or 'error'
 
-  upload_artifacts:
+  gather_artifacts:
     runs-on: ubuntu-latest
     needs: build
     steps:
