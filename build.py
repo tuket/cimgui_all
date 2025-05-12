@@ -46,6 +46,8 @@ def inWindows():
 
 def setup_vcpkg(target):
     vcpkg_path = rel_path("vcpkg")
+    if not os.path.exists(vcpkg_path):
+        subprocess.call(["git", "clone", "https://github.com/Microsoft/vcpkg.git"])
     bootstrap_vcpkg = os.path.join(vcpkg_path, "bootstrap-vcpkg.bat" if inWindows() else "bootstrap-vcpkg.sh")
     vcpkg = os.path.join(vcpkg_path, "vcpkg.exe" if inWindows() else "vcpkg")
     subprocess.call(bootstrap_vcpkg)
