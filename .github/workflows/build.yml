@@ -115,10 +115,6 @@ jobs:
         with:
           name: cimgui-browser-wasm-artifacts
 
-      # - name: Zip Artifacts
-      #   run: |
-      #     zip -r cimgui_all.zip *
-
       - name: Upload Zipped Artifacts
         uses: actions/upload-artifact@v4
         with:
