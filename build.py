@@ -74,7 +74,7 @@ def build_windows(target):
     subprocess.call(["cmake", "--build", buildPath, "--config", buildMode])
 
     srcFolder = os.path.join(buildPath, buildMode, "cimgui.dll")
-    dstFolder = os.path.join(outFolder, target, "cimgui.dll")
+    dstFolder = os.path.join(outFolder, target, "native", "cimgui.dll")
     new_dir(dstFolder)
     shutil.copy2(srcFolder, dstFolder)
 
@@ -92,7 +92,7 @@ def build_mac(target):
     subprocess.call(["cmake", "--build", buildPath, "--config", buildMode])
 
     srcFolder = os.path.join(buildPath, "libcimgui.dylib")
-    dstFolder = os.path.join(outFolder, target, "cimgui.dylib")
+    dstFolder = os.path.join(outFolder, target, "native", "cimgui.dylib")
     new_dir(dstFolder)
     shutil.copy2(srcFolder, dstFolder)
 
@@ -116,7 +116,7 @@ def build_linux(target):
     subprocess.call(["cmake", "--build", buildPath, "--config", buildMode])
 
     srcFolder = os.path.join(buildPath, "libcimgui.so")
-    dstFolder = os.path.join(outFolder, target, "cimgui.so")
+    dstFolder = os.path.join(outFolder, target, "native", "cimgui.so")
     new_dir(dstFolder)
     shutil.copy2(srcFolder, dstFolder)
 
@@ -153,7 +153,7 @@ def build_wasm():
         srcFolder = os.path.join(buildPath, "libcimgui.a")
     else:
         srcFolder = os.path.join(buildPath, buildMode, "libcimgui.a")
-    dstFolder = os.path.join(outFolder, target, "cimgui.a")
+    dstFolder = os.path.join(outFolder, target, "native", "cimgui.a")
     new_dir(dstFolder)
     shutil.copy2(srcFolder, dstFolder)
 
